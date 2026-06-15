@@ -21,16 +21,44 @@ from .models import (
 import json
 
 
+
 def home(request):
 
-    companies = DimCompany.objects.all()
-
-    return render(
-        request,
-        "companies/home.html",
-        {"companies": companies}
+    search_query = request.GET.get(
+        "search",
+        ""
     )
 
+    companies = (
+        DimCompany.objects.all()
+    )
+
+    if search_query:
+
+        companies = (
+            companies.filter(
+                company_name__icontains=
+                search_query
+            )
+        )
+
+    context = {
+
+        "companies":
+            companies,
+
+        "search_query":
+            search_query,
+    }
+
+    return render(
+
+        request,
+
+        "companies/home.html",
+
+        context
+    )
 
 def company_detail(request, symbol):
 
